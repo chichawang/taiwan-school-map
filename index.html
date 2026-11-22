@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="查詢桃園市、新北市、臺北市、新竹市、臺中市與高雄市國中小的學區、分鄰條件和校園位置。">
-  <title>全臺各縣市國中小學區地圖</title>
+  <meta name="description" content="查詢全臺 22 縣市國中小學區、分鄰條件、校園位置與警察、消防、醫療資源分區及院所分布。">
+  <title>全臺各縣市學區、警消與醫療分區地圖</title>
   <style>
 /* required styles */
 
@@ -691,8 +691,19 @@ main{display:grid;grid-template-columns:350px minmax(0,1fr);height:calc(100dvh -
 .filters{padding:24px 23px 18px;border-bottom:1px solid var(--line)}
 h2{font-size:21px;letter-spacing:.035em}
 .segmented{display:flex;margin:15px 0 17px;background:#edf0e9;border-radius:8px;padding:4px;gap:4px}
-.segmented button{flex:1;border:0;background:none;border-radius:6px;padding:7px 8px;font-size:14px;font-weight:740}
+.segmented[hidden]{display:none}
+.segmented button{flex:1;border:0;background:none;border-radius:6px;padding:7px 2px;font-size:12.5px;font-weight:740;white-space:nowrap}
 .segmented button[aria-pressed=true]{background:var(--accent);color:white;box-shadow:0 1px 3px #163d3730}
+.segmented button[data-level="0"][aria-pressed=true],.segmented button[data-level="1"][aria-pressed=true]{background:#ca8a04;color:#fff}
+.segmented button[data-level="2"][aria-pressed=true]{background:#1e3a8a;color:#fff}
+.segmented button[data-level="3"][aria-pressed=true]{background:#b91c1c;color:#fff}
+.segmented button[data-level="4"][aria-pressed=true]{background:#0f766e;color:#fff}
+.sub-segmented{margin:-8px 0 14px;background:#f3f4ef}
+.sub-segmented button{font-size:12px;padding:5px 6px}
+.sub-segmented button[aria-pressed=true]{background:#48695e;color:#fff}
+#police-submode button[aria-pressed=true]{background:#1e40af;color:#fff}
+#fire-submode button[aria-pressed=true]{background:#dc2626;color:#fff}
+#medical-submode button[aria-pressed=true]{background:#0d9488;color:#fff}
 .search-label{display:block;font-size:12px;font-weight:740;color:#4b5951;margin:12px 0 6px}
 .search-box{position:relative}
 .search-box span{position:absolute;top:13px;left:13px;width:12px;height:12px;border-radius:100%;border:1.6px solid #63706a;pointer-events:none}
@@ -737,7 +748,20 @@ input::placeholder{color:#68736c}
 .swatch.school{background:#98bfad}
 .swatch.estimated{background:#e6f0e7;border-style:dashed}
 .school-pin{display:grid;place-items:center;background:none;border:0}
-.school-pin span,.swatch.campus{display:block;width:10px;height:10px;border:1.5px solid white;border-radius:50%;background:#24506e;box-shadow:0 0 0 1px #24506e}
+.school-pin span,.swatch.campus{display:block;width:10px;height:10px;border:1.5px solid white;border-radius:50%;background:#eab308;box-shadow:0 0 0 1.2px #a16207}
+.precinct-pin,.station-pin,.fire-battalion-pin,.fire-station-pin,.med-center-pin,.med-hospital-pin{display:grid;place-items:center;background:none;border:0}
+.precinct-pin span,.swatch.precinct-dot{display:block;width:13px;height:13px;border:2px solid #fff;border-radius:50%;background:#1e3a8a;box-shadow:0 0 0 1.5px #1e3a8a}
+.station-pin span,.swatch.station-dot{display:block;width:9.5px;height:9.5px;border:1.5px solid #fff;border-radius:50%;background:#2563eb;box-shadow:0 0 0 1px #1d4ed8}
+.fire-battalion-pin span,.swatch.fire-battalion-dot{display:block;width:13px;height:13px;border:2px solid #fff;border-radius:50%;background:#b91c1c;box-shadow:0 0 0 1.5px #b91c1c}
+.fire-station-pin span,.swatch.fire-station-dot{display:block;width:10px;height:10px;border:1.5px solid #fff;border-radius:50%;background:#ef4444;box-shadow:0 0 0 1px #b91c1c}
+.med-center-pin span,.swatch.med-center-dot{display:block;width:13px;height:13px;border:2px solid #fff;border-radius:50%;background:#0f766e;box-shadow:0 0 0 1.5px #0f766e}
+.med-hospital-pin span,.swatch.med-hospital-dot{display:block;width:10px;height:10px;border:1.5px solid #fff;border-radius:50%;background:#10b981;box-shadow:0 0 0 1px #047857}
+.precinct-pin.active span,.station-pin.active span,.fire-battalion-pin.active span,.fire-station-pin.active span,.med-center-pin.active span,.med-hospital-pin.active span{transform:scale(1.35);box-shadow:0 0 0 2.5px #111827}
+.police-meta{font-size:13px;line-height:1.7;margin:8px 0;color:#33413b}
+.police-meta a{color:var(--accent);text-decoration:none;font-weight:600}
+.police-meta a:hover{text-decoration:underline}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:#e6f0e7;color:#205d4c;margin:4px 0}
+.badge.est{background:#f6f0db;color:#7c5818}
 .school-rule{margin:10px 0;padding:9px 11px;border:1px solid var(--line);border-radius:8px}
 .school-rule p{font-size:13px;line-height:1.65;margin-top:4px;white-space:pre-line}
 .campus-button{margin:6px 0}
@@ -757,7 +781,7 @@ dialog a{color:var(--accent)}
 .masthead{height:61px;padding:0 12px}.brand,.mast-actions{gap:7px}.logo{width:33px;height:33px;border-radius:8px}h1{font-size:17px}.brand p{font-size:7px;letter-spacing:.09em}.secondary,.year{font-size:10px;padding:5px 6px}
 main{height:calc(100dvh - 61px);display:grid;grid-template-columns:1fr;grid-template-rows:minmax(200px,51%) minmax(0,1fr)}
 .map-area{grid-row:1}.panel{grid-row:2;border-right:0;border-top:1px solid var(--line)}
-.filters{display:grid;grid-template-columns:minmax(0,1fr) 125px;gap:7px;padding:11px 13px}.filters h2{font-size:16px;align-self:center}.segmented{margin:0;padding:2px}.segmented button{font-size:12px;padding:4px}.search-label{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
+.filters{display:grid;grid-template-columns:minmax(0,1fr) 125px;gap:7px;padding:11px 13px}.filters h2{grid-column:1/-1;font-size:16px;align-self:center}.segmented,.sub-segmented{grid-column:1/-1;margin:0;padding:2px}.segmented button{font-size:12px;padding:4px}.search-label{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
 input,select{height:36px;font-size:13px}#city{grid-column:1/-1}.search-box span{top:11px}.results{padding:0 14px 10px}#viewbar{padding:9px 0}.row{padding:8px 2px}.panel-foot{display:none}.legend{bottom:25px;padding:7px 8px;gap:4px}.layer-tools{top:10px;right:10px}.layer-tools button{padding:6px 8px}#basemap-status{top:48px;right:10px}
 }
 
@@ -772,17 +796,32 @@ input,select{height:36px;font-size:13px}#city{grid-column:1/-1}.search-box span{
   <header class="masthead">
     <div class="brand">
       <span class="logo" aria-hidden="true"><i></i><i></i><i></i></span>
-      <div><h1>全臺各縣市國中小學區地圖</h1></div>
+      <div><h1>全臺各縣市學區、警消與醫療分區地圖</h1></div>
     </div>
-    <div class="mast-actions"><span class="year">115 學年度</span><button id="sources" class="secondary" type="button">資料來源 <span aria-hidden="true">↗</span></button></div>
+    <div class="mast-actions"><span class="year" id="year-badge">115 學年度</span><button id="sources" class="secondary" type="button">資料來源 <span aria-hidden="true">↗</span></button></div>
   </header>
   <main>
-    <aside class="panel" aria-label="學區查詢">
+    <aside class="panel" aria-label="學區、警消與醫療分區查詢">
       <section class="filters">
-        <h2>查詢學區</h2>
-        <div class="segmented" aria-label="選擇學制">
+        <h2 id="panel-heading">查詢學區</h2>
+        <div class="segmented" aria-label="選擇查詢類別">
           <button type="button" data-level="0" aria-pressed="true">國小</button>
           <button type="button" data-level="1" aria-pressed="false">國中</button>
+          <button type="button" data-level="2" aria-pressed="false">警察</button>
+          <button type="button" data-level="3" aria-pressed="false">消防</button>
+          <button type="button" data-level="4" aria-pressed="false">醫療</button>
+        </div>
+        <div class="segmented sub-segmented" id="police-submode" aria-label="選擇警政層級" hidden>
+          <button type="button" data-police-view="station" aria-pressed="true">派出所轄區</button>
+          <button type="button" data-police-view="precinct" aria-pressed="false">分局轄區</button>
+        </div>
+        <div class="segmented sub-segmented" id="fire-submode" aria-label="選擇消防層級" hidden>
+          <button type="button" data-fire-view="station" aria-pressed="true">消防分隊</button>
+          <button type="button" data-fire-view="battalion" aria-pressed="false">救災大隊</button>
+        </div>
+        <div class="segmented sub-segmented" id="medical-submode" aria-label="選擇醫療層級" hidden>
+          <button type="button" data-med-view="region" aria-pressed="true">次醫療區域</button>
+          <button type="button" data-med-view="hospital" aria-pressed="false">鄰近醫院</button>
         </div>
         <label class="search-label" for="city">縣市</label>
         <select id="city">
@@ -809,7 +848,7 @@ input,select{height:36px;font-size:13px}#city{grid-column:1/-1}.search-box span{
           <option value="km">金門縣</option>
           <option value="lc">連江縣</option>
         </select>
-        <label class="search-label" for="search">搜尋學校或里名</label>
+        <label class="search-label" id="search-label" for="search">搜尋學校或里名</label>
         <div class="search-box"><span aria-hidden="true"></span><input id="search" type="search" autocomplete="off" placeholder="例如：青溪國小、中路里"></div>
         <label class="search-label" for="district">行政區</label>
         <select id="district"><option value="">全桃園市</option></select>
@@ -818,19 +857,36 @@ input,select{height:36px;font-size:13px}#city{grid-column:1/-1}.search-box span{
         <div id="viewbar"></div>
         <div id="result" aria-live="polite"><p class="empty">正在載入地圖資料…</p></div>
       </section>
-      <p class="panel-foot">入學資格以教育局公告為準。</p>
+      <p class="panel-foot" id="panel-foot">入學資格以教育局公告為準。</p>
     </aside>
-    <section class="map-area" aria-label="行政區及學區地圖">
+    <section class="map-area" aria-label="行政區、學區、警消與醫療分區地圖">
       <div id="map"></div>
       <div class="layer-tools"><button type="button" id="toggle-towns" aria-pressed="true">鄉鎮邊界</button><button type="button" id="toggle-villages" aria-pressed="false">鄰里邊界</button><button type="button" id="basemap" aria-pressed="false">OSM 底圖</button><button type="button" id="labels" aria-pressed="false"><span aria-hidden="true">里</span> 顯示里名</button><button type="button" id="reset"><span aria-hidden="true">⌖</span> 全市視圖</button></div>
       <p id="basemap-status" role="status"></p>
       <div class="legend">
         <strong>圖例</strong>
-        <span><i class="swatch campus"></i>學校位置</span>
-        <span><i class="swatch school"></i>單校學區</span>
-        <span><i class="swatch split"></i>多校學區</span>
-        <span id="estimated-key"><i class="swatch estimated"></i>分鄰估算範圍</span>
-        <span id="official-key" hidden><i class="swatch school"></i>官方分鄰範圍</span>
+        <span class="legend-school"><i class="swatch campus"></i>學校位置</span>
+        <span class="legend-school"><i class="swatch school"></i>單校學區</span>
+        <span class="legend-school"><i class="swatch split"></i>多校學區</span>
+        <span class="legend-school" id="estimated-key"><i class="swatch estimated"></i>分鄰估算範圍</span>
+        <span class="legend-school" id="official-key" hidden><i class="swatch school"></i>官方分鄰範圍</span>
+        <span class="legend-police" hidden><i class="swatch precinct-dot"></i>警察分局</span>
+        <span class="legend-police" hidden><i class="swatch station-dot"></i>派出所／分駐所</span>
+        <span class="legend-police-precinct" hidden><i class="swatch school"></i>分局轄區（完整行政區）</span>
+        <span class="legend-police-precinct" hidden><i class="swatch estimated"></i>多分局行政區（推估）</span>
+        <span class="legend-police-station" hidden><i class="swatch school"></i>官方／單一派出所轄區</span>
+        <span class="legend-police-station" hidden><i class="swatch split"></i>多派出所共管里</span>
+        <span class="legend-police-station" hidden><i class="swatch estimated"></i>推估派出所範圍</span>
+        <span class="legend-fire" hidden><i class="swatch fire-battalion-dot"></i>救災救護大隊</span>
+        <span class="legend-fire" hidden><i class="swatch fire-station-dot"></i>消防分隊</span>
+        <span class="legend-fire-battalion" hidden><i class="swatch school"></i>大隊轄區（完整行政區）</span>
+        <span class="legend-fire-battalion" hidden><i class="swatch estimated"></i>多大隊行政區（推估）</span>
+        <span class="legend-fire-station" hidden><i class="swatch school"></i>單一分隊行政區</span>
+        <span class="legend-fire-station" hidden><i class="swatch estimated"></i>推估分隊範圍</span>
+        <span class="legend-medical" hidden><i class="swatch med-center-dot"></i>醫學中心／區域醫院</span>
+        <span class="legend-medical" hidden><i class="swatch med-hospital-dot"></i>地區醫院</span>
+        <span class="legend-medical-region" hidden><i class="swatch school"></i>官方次醫療區域</span>
+        <span class="legend-medical-hospital" hidden><i class="swatch estimated"></i>鄰近醫院參考範圍（推估）</span>
         <span><i class="swatch boundary"></i>行政區界</span>
       </div>
     </section>
@@ -839,8 +895,18 @@ input,select{height:36px;font-size:13px}#city{grid-column:1/-1}.search-box span{
     <button type="button" class="dialog-close" id="close-dialog" aria-label="關閉">×</button>
     <h2>資料來源</h2>
     <p>學區採用各縣市政府教育局（處）公開學區資料／PDF 劃分表（涵蓋全臺 21 縣市；苗栗縣因教育處查詢網頁暫時無法存取，以國土測繪中心各級學校範圍圖與村里界線進行空間距離推估）。里界採國土測繪中心 2026 年 8 月 17 日版。</p>
-    <p>全里公告的範圍按學校合併。臺北市分鄰區塊套用民政局鄰界圖。桃園市及新北市的分鄰虛線用公開門牌座標估算，繪製至距取樣點約 100 公尺內。涉及門牌、道路、例外條件，或圖面留白時，請核對公告。學校點位採國土測繪中心校園圖資與官方校址。</p><p>學區圖與查詢可離線使用。OpenStreetMap 底圖由 OpenFreeMap 提供，需連線載入。</p>
+    <p>全里公告的範圍按學校合併。臺北市分鄰區塊套用民政局鄰界圖。桃園市及新北市的分鄰虛線用公開門牌座標估算，繪製至距取樣點約 100 公尺內。涉及門牌、道路、例外條件，或圖面留白時，請核對公告。學校點位採國土測繪中心校園圖資與官方校址。</p>
+    <p>警察分區與據點採用內政部警政署「各縣(市)警察(分)局暨所屬分駐(派出)所地址資料」（2026 年 11 月 6 日版，將 TWD97 坐標轉換為 WGS84 經緯度）。分局層級以完整行政區合併呈現，多分局共管區依據點空間位置推估；派出所層級優先採計已公開警勤區里鄰對照表（如新竹市第二、第三分局官網公告）與單一據點鄉鎮市區，其餘無公開轄區表之行政區則依同分局內派出所直線距離推估並以虛線標示，實際轄區與警勤區請一律以各地方警察局公告為準。</p>
+    <p>消防轄區與據點採用內政部「救援與應變單位點位」（2025 年 12 月 16 日版）。單一一般分隊所在行政區完整對應呈現，多個分隊共管之行政區則於村里層級依分隊據點直線距離推估並以虛線區別。緊急救災救護由 119 統一派遣，實際責任範圍請以各地方消防局公告為準。</p>
+    <p>醫療區域採用衛福部《醫院設立或擴充許可辦法》第六條附表（6 一級、17 二級、51 次醫療區域；金門縣、連江縣依附表備註二併入臺北一級醫療區域計，不列入二級及次醫療區域劃分），結合健保署「健保特約醫療院所名冊」（#168341，2026 年 11 月版）醫學中心、區域醫院與地區醫院；部分未見公開座標之醫院暫定位於行政區／村里中心點附近。醫療資源規劃區供規劃與研究參考，民眾就醫不受轄區限制。</p>
+    <p>學區、警消與醫療分區查詢可離線使用。OpenStreetMap 底圖由 OpenFreeMap 提供，需連線載入。</p>
     <ul>
+      <li><a href="https://data.gov.tw/dataset/5958" target="_blank" rel="noopener">內政部警政署：各縣(市)警察(分)局暨所屬分駐(派出)所地址資料</a></li>
+      <li><a href="https://www.hccp.gov.tw/" target="_blank" rel="noopener">新竹市警察局：各派出所警勤區里鄰一覽表</a></li>
+      <li><a href="https://data.gov.tw/dataset/5969" target="_blank" rel="noopener">內政部：救援與應變單位點位（消防據點）</a></li>
+      <li><a href="https://www.nfa.gov.tw/cht/?code=list&amp;ids=84" target="_blank" rel="noopener">內政部消防署：各消防局據點聯絡方式</a></li>
+      <li><a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?PCODE=L0020163" target="_blank" rel="noopener">衛福部《醫院設立或擴充許可辦法》第六條及附表</a></li>
+      <li><a href="https://data.gov.tw/dataset/168341" target="_blank" rel="noopener">健保署：健保特約醫療院所名冊 (#168341)</a></li>
       <li><a href="https://data.taipei/dataset/detail?id=678c5215-f14a-47e3-92bd-da43f9d7c7a9" target="_blank" rel="noopener">臺北市國中小學區</a></li>
       <li><a href="https://data.taipei/dataset/detail?id=6d864ede-c482-4f33-bb89-5be19dc772e1" target="_blank" rel="noopener">臺北市官方鄰界圖</a></li>
       <li><a href="https://data.gov.tw/dataset/124829" target="_blank" rel="noopener">新北市國小學區</a></li>
@@ -891,6 +957,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //# sourceMappingURL=leaflet.js.map
 </script>
 <script src="data/context.js"></script>
+<script src="data/police.js"></script>
+<script src="data/fire.js"></script>
+<script src="data/medical.js"></script>
 <script>
 'use strict';
 
@@ -1018,10 +1087,48 @@ function initCity(cityKey, cityName, data) {
   const basemapStatus = byId('basemap-status');
   let basemap;
   let basemapVisible = false;
-  const levels = ['國小', '國中'];
+  const levels = ['國小', '國中', '警察分區', '消防轄區', '醫療體系'];
+  const isPoliceMode = () => level === 2;
+  const isFireMode = () => level === 3;
+  const isMedicalMode = () => level === 4;
+  const isZoneMode = () => level >= 2;
+  let policeView = document.querySelector('[data-police-view][aria-pressed="true"]')?.dataset.policeView || 'station';
+  let fireView = document.querySelector('[data-fire-view][aria-pressed="true"]')?.dataset.fireView || 'station';
+  let medView = document.querySelector('[data-med-view][aria-pressed="true"]')?.dataset.medView || 'region';
+  const isStationView = () => isPoliceMode() && policeView === 'station';
+  const isFireStationView = () => isFireMode() && fireView === 'station';
+  const isMedRegionView = () => isMedicalMode() && medView === 'region';
   const palette = ['#7ab5a2', '#84aacc', '#d9a183', '#af9cc9', '#a7bb77', '#dbb673', '#9fbac1', '#d49ab2', '#8baa8b', '#c2b993', '#8fb2d6', '#c4a89d'];
   let level = Number(document.querySelector('[data-level][aria-pressed="true"]').dataset.level);
   let detail = null;
+
+  function syncModeUI() {
+    const police = isPoliceMode();
+    const fire = isFireMode();
+    const med = isMedicalMode();
+    byId('police-submode').hidden = !police;
+    byId('fire-submode').hidden = !fire;
+    byId('medical-submode').hidden = !med;
+    for (const el of document.querySelectorAll('.legend-school')) {
+      if (el.id === 'estimated-key') el.hidden = police || fire || med || cityKey === 'tp';
+      else if (el.id === 'official-key') el.hidden = police || fire || med || cityKey !== 'tp';
+      else el.hidden = police || fire || med;
+    }
+    for (const el of document.querySelectorAll('.legend-police')) el.hidden = !police;
+    for (const el of document.querySelectorAll('.legend-police-station')) el.hidden = !(police && policeView === 'station');
+    for (const el of document.querySelectorAll('.legend-police-precinct')) el.hidden = !(police && policeView === 'precinct');
+    for (const el of document.querySelectorAll('.legend-fire')) el.hidden = !fire;
+    for (const el of document.querySelectorAll('.legend-fire-station')) el.hidden = !(fire && fireView === 'station');
+    for (const el of document.querySelectorAll('.legend-fire-battalion')) el.hidden = !(fire && fireView === 'battalion');
+    for (const el of document.querySelectorAll('.legend-medical')) el.hidden = !med;
+    for (const el of document.querySelectorAll('.legend-medical-region')) el.hidden = !(med && medView === 'region');
+    for (const el of document.querySelectorAll('.legend-medical-hospital')) el.hidden = !(med && medView === 'hospital');
+    byId('panel-heading').textContent = police ? '查詢警察分區' : (fire ? '查詢消防轄區' : (med ? '查詢醫療區域與院所' : '查詢學區'));
+    byId('search-label').textContent = police ? '搜尋分局、派出所或里名' : (fire ? '搜尋消防分隊、大隊或里名' : (med ? '搜尋次醫療區、醫院或里名' : '搜尋學校或里名'));
+    search.placeholder = police ? '例如：中路派出所、中山分局、里名' : (fire ? '例如：桃園分隊、第一大隊、里名' : (med ? '例如：臺大醫院、中區、永和' : '例如：青溪國小、中路里'));
+    byId('panel-foot').textContent = police ? '警察轄區與警勤區以各地方警察局公告為準。' : (fire ? '緊急救災救護由 119 統一派遣，消防轄區以各縣市消防局公告為準。' : (med ? '醫療資源規劃區依衛福部公告附表，民眾就醫不受轄區限制。' : '入學資格以教育局公告為準。'));
+    byId('year-badge').textContent = police ? '115/11 警政資料' : (fire ? '114/12 消防資料' : (med ? '115/11 醫療資料' : '115 學年度'));
+  }
 
   search.value = '';
   district.replaceChildren(new Option('全' + cityName, ''));
@@ -1031,10 +1138,9 @@ function initCity(cityKey, cityName, data) {
   basemapToggle.setAttribute('aria-pressed', 'false');
   basemapToggle.disabled = false;
   basemapStatus.textContent = '';
-  byId('estimated-key').hidden = cityKey === 'tp';
-  byId('official-key').hidden = cityKey !== 'tp';
+  syncModeUI();
 
-  const map = L.map('map', { preferCanvas: true, minZoom: 8, maxZoom: 17, zoomSnap: 0.5, zoomAnimation: false, maxBounds: [[21.8,119.3],[25.4,122.1]], maxBoundsViscosity: .85 }).setView([25, 121.5], 10);
+  const map = L.map('map', { preferCanvas: true, minZoom: 8, maxZoom: 17, zoomSnap: 0.5, zoomAnimation: false, maxBounds: [[21.5,118.0],[26.6,122.5]], maxBoundsViscosity: .85 }).setView([25, 121.5], 10);
   map.zoomControl.setPosition('bottomright');
   L.control.scale({ imperial: false, position: 'bottomright' }).addTo(map);
 
@@ -1048,6 +1154,109 @@ function initCity(cityKey, cityName, data) {
   const collator = new Intl.Collator('zh-Hant');
   const sortName = (a,b) => collator.compare(a, b);
   const normalize = s => s.normalize('NFKC').replace(/\s/g, '').replaceAll('臺', '台');
+  const policeCity = window.POLICE_DATA?.cities?.[cityKey] || null;
+  const precinctsByName = new Map();
+  const stationsByKey = new Map();
+  const precinctVillages = new Map();
+  const stationVillages = new Map();
+  const villagePrecinct = policeCity?.villagePrecinct || {};
+  const villageStation = policeCity?.villageStation || {};
+  if (policeCity) {
+    for (const pr of policeCity.precincts) {
+      precinctsByName.set(pr.name, pr);
+      precinctVillages.set(pr.name, []);
+      if (!pr.stations.length) stationVillages.set(pr.name, []);
+      for (const st of pr.stations) {
+        const key = pr.name + '|' + st.name;
+        stationsByKey.set(key, { ...st, precinct: pr.name });
+        stationVillages.set(key, []);
+      }
+    }
+    for (const feature of villageFeatures) {
+      const p = feature.properties;
+      const vp = villagePrecinct[p.id];
+      if (vp && precinctVillages.has(vp.p)) precinctVillages.get(vp.p).push(p);
+      const vs = villageStation[p.id];
+      if (vs) {
+        for (const skey of vs.s) {
+          if (!stationVillages.has(skey)) stationVillages.set(skey, []);
+          stationVillages.get(skey).push(p);
+        }
+      }
+    }
+    for (const list of precinctVillages.values()) {
+      list.sort((a, b) => sortName(a.d, b.d) || sortName(a.n, b.n));
+    }
+    for (const list of stationVillages.values()) {
+      list.sort((a, b) => sortName(a.d, b.d) || sortName(a.n, b.n));
+    }
+  }
+  const fireCity = window.FIRE_DATA?.cities?.[cityKey] || null;
+  const fireBattalionsByName = new Map();
+  const fireStationsByKey = new Map();
+  const fireBattalionVillages = new Map();
+  const fireStationVillages = new Map();
+  const villageFireBattalion = fireCity?.villageBattalion || {};
+  const villageFireStation = fireCity?.villageStation || {};
+  if (fireCity) {
+    for (const b of fireCity.battalions) {
+      fireBattalionsByName.set(b.name, b);
+      fireBattalionVillages.set(b.name, []);
+      for (const st of b.stations) {
+        const key = b.name + '|' + st.name;
+        fireStationsByKey.set(key, { ...st, battalion: b.name });
+        fireStationVillages.set(key, []);
+      }
+    }
+    for (const feature of villageFeatures) {
+      const p = feature.properties;
+      const vb = villageFireBattalion[p.id];
+      if (vb && fireBattalionVillages.has(vb.b)) fireBattalionVillages.get(vb.b).push(p);
+      const vs = villageFireStation[p.id];
+      if (vs) {
+        for (const skey of vs.s) {
+          if (!fireStationVillages.has(skey)) fireStationVillages.set(skey, []);
+          fireStationVillages.get(skey).push(p);
+        }
+      }
+    }
+    for (const list of fireBattalionVillages.values()) {
+      list.sort((a, b) => sortName(a.d, b.d) || sortName(a.n, b.n));
+    }
+    for (const list of fireStationVillages.values()) {
+      list.sort((a, b) => sortName(a.d, b.d) || sortName(a.n, b.n));
+    }
+  }
+  const medCity = window.MEDICAL_DATA?.cities?.[cityKey] || null;
+  const medRegionsById = new Map();
+  const medHospitalsById = new Map();
+  const medRegionVillages = new Map();
+  const medHospitalVillages = new Map();
+  const villageMedRegion = medCity?.villageRegion || {};
+  const villageMedNearest = medCity?.villageNearest || {};
+  if (medCity) {
+    for (const r of medCity.regions) {
+      medRegionsById.set(r.id, r);
+      medRegionVillages.set(r.id, []);
+    }
+    for (const h of medCity.hospitals) {
+      medHospitalsById.set(h.id, h);
+      medHospitalVillages.set(h.id, []);
+    }
+    for (const feature of villageFeatures) {
+      const p = feature.properties;
+      const rid = villageMedRegion[p.id];
+      if (rid && medRegionVillages.has(rid)) medRegionVillages.get(rid).push(p);
+      const hid = villageMedNearest[p.id];
+      if (hid && medHospitalVillages.has(hid)) medHospitalVillages.get(hid).push(p);
+    }
+    for (const list of medRegionVillages.values()) {
+      list.sort((a, b) => sortName(a.d, b.d) || sortName(a.n, b.n));
+    }
+    for (const list of medHospitalVillages.values()) {
+      list.sort((a, b) => sortName(a.d, b.d) || sortName(a.n, b.n));
+    }
+  }
   const districtLayers = new Map();
   const villageLayers = new Map();
   const districtLabels = L.layerGroup().addTo(map);
@@ -1111,13 +1320,57 @@ function initCity(cityKey, cityName, data) {
       layer.bindTooltip(p.d + '・' + p.n, { sticky: true, direction: 'top' });
       layer.on({
         click: () => {
-          const rules = p.a[level];
-          if (rules.length === 1 && !needsDetail(p)) openDetail('school', rules[0].s);
-          else openDetail('village', p.id, false);
+          if (isZoneMode()) {
+            openDetail('village', p.id, false);
+          } else {
+            const rules = p.a[level];
+            if (rules.length === 1 && !needsDetail(p)) openDetail('school', rules[0].s);
+            else openDetail('village', p.id, false);
+          }
           layer.closeTooltip();
         },
-        mouseover: () => layer.setStyle({ opacity: .85, weight: 1.2 }),
-        mouseout: () => layer.setStyle(villageReferenceStyle(feature))
+        mouseover: () => {
+          if (isZoneMode()) {
+            let label = p.d + '・' + p.n;
+            if (isPoliceMode()) {
+              if (isStationView()) {
+                const vs = villageStation[p.id];
+                if (vs) {
+                  const stNames = vs.s.map(k => k.includes('|') ? k.split('|')[1] : k);
+                  label += '（' + stNames.join('、') + (vs.est ? '・推估' : '') + '）';
+                }
+              } else {
+                const vp = villagePrecinct[p.id];
+                if (vp) label += '（' + vp.p + (vp.est ? '・推估' : '') + '）';
+              }
+            } else if (isFireMode()) {
+              if (isFireStationView()) {
+                const vs = villageFireStation[p.id];
+                if (vs) {
+                  const stNames = vs.s.map(k => k.includes('|') ? k.split('|')[1] : k);
+                  label += '（' + stNames.join('、') + (vs.est ? '・推估' : '') + '）';
+                }
+              } else {
+                const vb = villageFireBattalion[p.id];
+                if (vb) label += '（' + vb.b + (vb.est ? '・推估' : '') + '）';
+              }
+            } else if (isMedicalMode()) {
+              if (isMedRegionView()) {
+                const r = medRegionsById.get(villageMedRegion[p.id]);
+                if (r) label += '（' + r.l2 + '／' + r.sub + '）';
+              } else {
+                const h = medHospitalsById.get(villageMedNearest[p.id]);
+                if (h) label += '（近：' + h.name + '）';
+              }
+            }
+            layer.setTooltipContent(label);
+            layer.setStyle({ opacity: 1, weight: 1.8 });
+          } else {
+            layer.setTooltipContent(p.d + '・' + p.n);
+            layer.setStyle({ opacity: .85, weight: 1.2 });
+          }
+        },
+        mouseout: () => layer.setStyle(isPoliceMode() ? policeVillageStyle(feature) : (isFireMode() ? fireVillageStyle(feature) : (isMedicalMode() ? medVillageStyle(feature) : villageReferenceStyle(feature))))
       });
     }
   }).addTo(map);
@@ -1182,6 +1435,122 @@ function initCity(cityKey, cityName, data) {
     };
   }
 
+  function isZoneVillageHighlighted(p) {
+    if (!detail) return false;
+    if (detail.type === 'village') return p.id === detail.key;
+    if (isPoliceMode()) {
+      if (isStationView()) {
+        if (detail.type === 'station') return Boolean(villageStation[p.id]?.s?.includes(detail.key));
+        if (detail.type === 'precinct') return villagePrecinct[p.id]?.p === detail.key;
+        return false;
+      }
+      const selectedPrecinct = detail.type === 'precinct'
+        ? detail.key
+        : (detail.type === 'station' ? stationsByKey.get(detail.key)?.precinct : null);
+      return selectedPrecinct ? villagePrecinct[p.id]?.p === selectedPrecinct : false;
+    }
+    if (isFireMode()) {
+      if (isFireStationView()) {
+        if (detail.type === 'fireStation') return Boolean(villageFireStation[p.id]?.s?.includes(detail.key));
+        if (detail.type === 'fireBattalion') return villageFireBattalion[p.id]?.b === detail.key;
+        return false;
+      }
+      const selectedBat = detail.type === 'fireBattalion'
+        ? detail.key
+        : (detail.type === 'fireStation' ? fireStationsByKey.get(detail.key)?.battalion : null);
+      return selectedBat ? villageFireBattalion[p.id]?.b === selectedBat : false;
+    }
+    if (isMedicalMode()) {
+      if (isMedRegionView()) {
+        const selectedReg = detail.type === 'medRegion'
+          ? detail.key
+          : (detail.type === 'medHospital' ? medHospitalsById.get(detail.key)?.region : null);
+        return selectedReg ? villageMedRegion[p.id] === selectedReg : false;
+      }
+      if (detail.type === 'medHospital') return villageMedNearest[p.id] === detail.key;
+      if (detail.type === 'medRegion') return villageMedRegion[p.id] === detail.key;
+      return false;
+    }
+    return false;
+  }
+
+  function zoneVillageStyle(p, zoneKey, colorKey, isMulti, est) {
+    if (!zoneKey) return { color: '#63706a', opacity: showVillages ? .85 : 0, weight: showVillages ? 1.1 : 0, fillOpacity: 0 };
+    const hasSelection = Boolean(detail);
+    const highlighted = isZoneVillageHighlighted(p);
+    const dimmed = hasSelection && !highlighted;
+    const color = schoolColor(colorKey);
+    let strokeColor = isMulti ? '#9e783e' : (est ? '#365b54' : color);
+    let weight = est ? .8 : (isMulti ? 1 : .7);
+    let opacity = dimmed ? .22 : (est ? .75 : (isMulti ? .85 : .55));
+    let dashArray = est ? '3 3' : null;
+    if (showVillages) {
+      strokeColor = '#0055ff';
+      weight = 1.1;
+      opacity = .85;
+      dashArray = null;
+    }
+    if (highlighted) {
+      strokeColor = '#d9381e';
+      weight = detail?.type === 'village' ? 2.5 : 1.6;
+      opacity = 1;
+      dashArray = null;
+    }
+    return {
+      color: strokeColor,
+      weight,
+      dashArray,
+      opacity,
+      fillColor: isMulti && !highlighted ? '#f0dca6' : color,
+      fillOpacity: basemapVisible
+        ? (highlighted ? .65 : (dimmed ? .10 : .34))
+        : (highlighted ? .88 : (dimmed ? .22 : .65))
+    };
+  }
+
+  function policeVillageStyle(feature) {
+    const p = feature.properties;
+    const stationMode = isStationView();
+    const vs = stationMode ? villageStation[p.id] : null;
+    const vp = villagePrecinct[p.id];
+    const zoneKey = stationMode ? vs?.s?.[0] : vp?.p;
+    const highlighted = isZoneVillageHighlighted(p);
+    const colorKey = highlighted && stationMode && detail?.type === 'station' ? detail.key : zoneKey;
+    return zoneVillageStyle(p, zoneKey, colorKey, stationMode && vs?.s?.length > 1 && !vs.est, Boolean(stationMode ? vs?.est : vp?.est));
+  }
+
+  function fireVillageStyle(feature) {
+    const p = feature.properties;
+    const stationMode = isFireStationView();
+    const vs = stationMode ? villageFireStation[p.id] : null;
+    const vb = villageFireBattalion[p.id];
+    const zoneKey = stationMode ? vs?.s?.[0] : vb?.b;
+    const highlighted = isZoneVillageHighlighted(p);
+    const colorKey = highlighted && stationMode && detail?.type === 'fireStation' ? detail.key : zoneKey;
+    return zoneVillageStyle(p, zoneKey, colorKey, false, Boolean(stationMode ? vs?.est : vb?.est));
+  }
+
+  function medVillageStyle(feature) {
+    const p = feature.properties;
+    const regionMode = isMedRegionView();
+    const zoneKey = regionMode ? villageMedRegion[p.id] : villageMedNearest[p.id];
+    return zoneVillageStyle(p, zoneKey, zoneKey, false, !regionMode);
+  }
+
+  function addZoneMarker(coord, className, size, title, tooltipText, zIndexOffset, action) {
+    const half = size / 2;
+    const icon = L.divIcon({
+      className,
+      html: '<span aria-hidden="true"></span>',
+      iconSize: [size, size],
+      iconAnchor: [half, half]
+    });
+    L.marker(coord, { icon, title, alt: title, riseOnHover: true, zIndexOffset })
+      .bindTooltip(textElement('span', tooltipText), { direction: 'top', offset: [0, -Math.round(half)] })
+      .on('click', action)
+      .addTo(campusMarkers);
+  }
+
   function styleSchoolArea(layer, isNeighborhood) {
     const area = layer.feature.properties;
     const estimated = isNeighborhood && area.e !== false;
@@ -1206,38 +1575,113 @@ function initCity(cityKey, cityName, data) {
   }
 
   function updateCampusMarkers() {
-    const signature = JSON.stringify([level, district.value]);
+    const signature = isZoneMode()
+      ? JSON.stringify([level, district.value, detail?.type, detail?.key])
+      : JSON.stringify([level, district.value]);
     if (signature === markerSelection) return;
     markerSelection = signature;
     campusMarkers.clearLayers();
+    if (isPoliceMode()) {
+      if (!policeCity) return;
+      const activeDistrict = district.value;
+      const stationList = [];
+      const precinctList = [];
+      for (const pr of policeCity.precincts) {
+        const prMatch = !activeDistrict || pr.districts.includes(activeDistrict) || pr.dist === activeDistrict;
+        if (prMatch) precinctList.push(pr);
+        for (const st of pr.stations) {
+          const stMatch = !activeDistrict || st.dist === activeDistrict || pr.districts.includes(activeDistrict);
+          if (stMatch) stationList.push({ ...st, precinct: pr.name });
+        }
+      }
+      for (const st of stationList) {
+        const key = st.precinct + '|' + st.name;
+        const isActive = detail?.type === 'station' && detail.key === key;
+        addZoneMarker(st.coord, 'station-pin' + (isActive ? ' active' : ''), 14, st.name, st.name + '（' + st.precinct + '）', isActive ? 300 : 100, () => openDetail('station', key, false));
+      }
+      for (const pr of precinctList) {
+        const isActive = detail?.type === 'precinct' && detail.key === pr.name;
+        addZoneMarker(pr.coord, 'precinct-pin' + (isActive ? ' active' : ''), 18, pr.name, pr.name, isActive ? 400 : 200, () => openDetail('precinct', pr.name, false));
+      }
+      return;
+    }
+    if (isFireMode()) {
+      if (!fireCity) return;
+      const activeDistrict = district.value;
+      const stationList = [];
+      const batList = [];
+      for (const b of fireCity.battalions) {
+        const bMatch = !activeDistrict || b.districts.includes(activeDistrict) || b.dist === activeDistrict;
+        if (bMatch) batList.push(b);
+        for (const st of b.stations) {
+          const stMatch = !activeDistrict || st.dist === activeDistrict || b.districts.includes(activeDistrict);
+          if (stMatch) stationList.push({ ...st, battalion: b.name });
+        }
+      }
+      for (const st of stationList) {
+        const key = st.battalion + '|' + st.name;
+        const isActive = detail?.type === 'fireStation' && detail.key === key;
+        addZoneMarker(st.coord, 'fire-station-pin' + (isActive ? ' active' : ''), 14, st.name, st.name + '（' + st.battalion + '）', isActive ? 300 : 100, () => openDetail('fireStation', key, false));
+      }
+      for (const b of batList) {
+        const isActive = detail?.type === 'fireBattalion' && detail.key === b.name;
+        addZoneMarker(b.coord, 'fire-battalion-pin' + (isActive ? ' active' : ''), 18, b.name, b.name, isActive ? 400 : 200, () => openDetail('fireBattalion', b.name, false));
+      }
+      return;
+    }
+    if (isMedicalMode()) {
+      if (!medCity) return;
+      const activeDistrict = district.value;
+      const centers = [];
+      const clinics = [];
+      for (const h of medCity.hospitals) {
+        if (activeDistrict && h.dist !== activeDistrict) continue;
+        if (h.tierCode <= 2) centers.push(h);
+        else clinics.push(h);
+      }
+      for (const h of clinics) {
+        const isActive = detail?.type === 'medHospital' && detail.key === h.id;
+        addZoneMarker(h.coord, 'med-hospital-pin' + (isActive ? ' active' : ''), 14, h.name, h.name + '（' + h.tier + '）', isActive ? 300 : 100, () => openDetail('medHospital', h.id, false));
+      }
+      for (const h of centers) {
+        const isActive = detail?.type === 'medHospital' && detail.key === h.id;
+        addZoneMarker(h.coord, 'med-center-pin' + (isActive ? ' active' : ''), 18, h.name, h.name + '（' + h.tier + '）', isActive ? 400 : 200, () => openDetail('medHospital', h.id, false));
+      }
+      return;
+    }
     for (const [school, center] of Object.entries(campuses[level])) {
       if (!schoolInDistrict(school)) continue;
-      const icon = L.divIcon({
-        className: 'school-pin',
-        html: '<span aria-hidden="true"></span>',
-        iconSize: [15, 15],
-        iconAnchor: [7.5, 7.5]
-      });
-      L.marker(center, { icon, title: school, alt: school, riseOnHover: true })
-        .bindTooltip(textElement('span', school), { direction: 'top', offset: [0, -7] })
-        .on('click', () => openDetail('school', school))
-        .addTo(campusMarkers);
+      addZoneMarker(center, 'school-pin', 15, school, school, 0, () => openDetail('school', school));
     }
   }
 
   function refreshMap() {
     if (visibleLevel !== level) {
       visibleLevel = level;
-      schoolAreas.clearLayers().addData(areas[level]);
-      neighborhoodAreas.clearLayers().addData(neighborhoods[level]);
+      if (isZoneMode()) {
+        schoolAreas.clearLayers();
+        neighborhoodAreas.clearLayers();
+      } else {
+        schoolAreas.clearLayers().addData(areas[level]);
+        neighborhoodAreas.clearLayers().addData(neighborhoods[level]);
+      }
     }
-    const signature = JSON.stringify([level, basemapVisible, detail?.type, detail?.key, detail?.area?.n, map.getZoom() >= 13, showTowns, showVillages]);
+    const signature = JSON.stringify([level, policeView, fireView, medView, basemapVisible, detail?.type, detail?.key, detail?.area?.n, map.getZoom() >= 13, showTowns, showVillages]);
     if (signature !== areaStyleState) {
       areaStyleState = signature;
-      villageShapes.setStyle(villageReferenceStyle);
-      schoolAreas.eachLayer(layer => styleSchoolArea(layer, false));
-      neighborhoodAreas.eachLayer(layer => styleSchoolArea(layer, true));
-      if (showVillages) villageShapes.bringToFront();
+      if (isZoneMode()) {
+        villageShapes.setStyle(isPoliceMode() ? policeVillageStyle : (isFireMode() ? fireVillageStyle : medVillageStyle));
+        if (detail) {
+          villageShapes.eachLayer(layer => {
+            if (isZoneVillageHighlighted(layer.feature.properties)) layer.bringToFront();
+          });
+        }
+      } else {
+        villageShapes.setStyle(villageReferenceStyle);
+        schoolAreas.eachLayer(layer => styleSchoolArea(layer, false));
+        neighborhoodAreas.eachLayer(layer => styleSchoolArea(layer, true));
+        if (showVillages) villageShapes.bringToFront();
+      }
       if (showTowns) {
         if (!map.hasLayer(districtOutlines)) districtOutlines.addTo(map);
         districtOutlines.bringToFront();
@@ -1352,11 +1796,125 @@ function initCity(cityKey, cityName, data) {
     return el;
   }
 
+  function haversineKm([lat1, lng1], [lat2, lng2]) {
+    const r = Math.PI / 180;
+    const dLat = (lat2 - lat1) * r;
+    const dLng = (lng2 - lng1) * r;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(dLng / 2) ** 2;
+    return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function nearestStations(latlng, precinctName, limit = 3) {
+    if (!policeCity) return [];
+    const pr = precinctName ? precinctsByName.get(precinctName) : null;
+    let pool;
+    if (pr && pr.stations.length) {
+      pool = pr.stations.map(st => ({ ...st, precinct: pr.name }));
+    } else if (pr) {
+      pool = [{ ...pr, precinct: pr.name, isPrecinctOffice: true }];
+    } else {
+      pool = Array.from(stationsByKey.values());
+    }
+    return pool
+      .map(st => ({ ...st, km: haversineKm(latlng, st.coord) }))
+      .sort((a, b) => a.km - b.km)
+      .slice(0, limit);
+  }
+
+  function phoneElement(tel) {
+    const p = document.createElement('p');
+    p.className = 'police-meta';
+    p.append('電話：');
+    if (tel) {
+      const a = textElement('a', tel);
+      a.href = 'tel:' + tel.replace(/[^0-9+]/g, '');
+      p.append(a);
+    } else {
+      p.append('待補');
+    }
+    return p;
+  }
+
+  function bureauLinks(hq, metaUrl, metaLabel) {
+    const wrap = document.createElement('div');
+    wrap.style.marginTop = '12px';
+    if (hq?.url) {
+      const a = textElement('a', '查看' + hq.name + '網站 ↗', 'link');
+      a.href = hq.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      wrap.append(a, document.createElement('br'));
+    }
+    const ds = textElement('a', metaLabel, 'link');
+    ds.href = metaUrl;
+    ds.target = '_blank';
+    ds.rel = 'noopener';
+    wrap.append(ds);
+    return wrap;
+  }
+
+  function policeLinks() {
+    return bureauLinks(policeCity?.hq, window.POLICE_DATA?.meta?.url || 'https://data.gov.tw/dataset/5958', '查看警政署公開資料 (#5958) ↗');
+  }
+
+  function fireLinks() {
+    return bureauLinks(fireCity?.hq, window.FIRE_DATA?.meta?.url || 'https://data.gov.tw/dataset/5969', '查看消防據點公開資料 (#5969) ↗');
+  }
+
+  function medLinks() {
+    const wrap = bureauLinks(
+      medCity?.bureau,
+      window.MEDICAL_DATA?.meta?.nhiUrl || 'https://data.gov.tw/dataset/168341',
+      '查看健保特約醫院公開資料 (#168341) ↗'
+    );
+    const law = textElement('a', '查看衛福部醫療區域劃分附表 ↗', 'link');
+    law.href = window.MEDICAL_DATA?.meta?.lawUrl || 'https://law.moj.gov.tw/LawClass/LawAll.aspx?PCODE=L0020163';
+    law.target = '_blank';
+    law.rel = 'noopener';
+    wrap.append(document.createElement('br'), law);
+    return wrap;
+  }
+
+  function nearestFireStations(latlng, limit = 3) {
+    if (!fireCity) return [];
+    const all = Array.from(fireStationsByKey.values());
+    const reg = all.filter(s => !s.special);
+    const pool = reg.length ? reg : all;
+    return pool
+      .map(st => ({ ...st, km: haversineKm(latlng, st.coord) }))
+      .sort((a, b) => a.km - b.km)
+      .slice(0, limit);
+  }
+
+  function nearestHospitals(latlng, limit = 5) {
+    if (!medCity) return [];
+    return medCity.hospitals
+      .map(h => ({ ...h, km: haversineKm(latlng, h.coord) }))
+      .sort((a, b) => a.km - b.km)
+      .slice(0, limit);
+  }
+
+  function fitVillageListBounds(vlist, fallbackCoord, maxZoom, fallbackZoom) {
+    if (vlist.length) {
+      const bounds = L.latLngBounds([]);
+      for (const v of vlist) bounds.extend(villageLayers.get(v.id).getBounds());
+      fit(bounds, maxZoom);
+    } else if (fallbackCoord) {
+      map.setView(fallbackCoord, fallbackZoom);
+    }
+  }
+
   function openDetail(type, key, move = true, area = null) {
     const previous = detail;
     const same = previous?.type === type && previous.key === key && previous.area === area;
     detail = { type, key, area, previous: same ? previous.previous : previous };
     if (move && type === 'village') fit(villageLayers.get(key).getBounds(), 15);
+    if (move && type === 'precinct') fitVillageListBounds(precinctVillages.get(key) || [], precinctsByName.get(key)?.coord, 13, 14);
+    if (move && type === 'station') fitVillageListBounds(stationVillages.get(key) || [], stationsByKey.get(key)?.coord, 15, 15);
+    if (move && type === 'fireBattalion') fitVillageListBounds(fireBattalionVillages.get(key) || [], fireBattalionsByName.get(key)?.coord, 13, 14);
+    if (move && type === 'fireStation') fitVillageListBounds(fireStationVillages.get(key) || [], fireStationsByKey.get(key)?.coord, 15, 15);
+    if (move && type === 'medRegion') fitVillageListBounds(medRegionVillages.get(key) || [], null, 12, 13);
+    if (move && type === 'medHospital') fitVillageListBounds(medHospitalVillages.get(key) || [], medHospitalsById.get(key)?.coord, 14, 15);
     refreshMap();
     render();
     document.querySelector('.results').scrollTop = 0;
@@ -1421,16 +1979,707 @@ function initCity(cityKey, cityName, data) {
     }
   }
 
+  function renderPrecinct(name) {
+    const pr = precinctsByName.get(name);
+    if (!pr) return;
+    const vlist = precinctVillages.get(name) || [];
+    result.append(
+      textElement('p', policeCity.hq.name + ' · ' + pr.districts.join('、'), 'muted'),
+      textElement('h3', pr.name, 'detail-title')
+    );
+    const est = pr.coverage === 'split_estimated';
+    result.append(textElement('span', est ? '多分局行政區（村里範圍推估）' : '完整行政區對應', est ? 'badge est' : 'badge'));
+    result.append(textElement('p', '地址：' + pr.addr, 'police-meta'), phoneElement(pr.tel));
+    result.append(button('定位分局', 'secondary campus-button', () => map.setView(pr.coord, 15)));
+    if (est) {
+      result.append(textElement('p', '轄區含多個分局共管之行政區，地圖分界依區內分局與派出所位置推估，實際村里轄區請以警察局公告為準。', 'notice'));
+    }
+    result.append(textElement('h3', '所屬分駐所／派出所（' + pr.stations.length + ' 所）', 'section-heading'));
+    for (const st of pr.stations) {
+      const card = document.createElement('article');
+      card.className = 'school-card';
+      const stKey = pr.name + '|' + st.name;
+      const scount = stationVillages.get(stKey)?.length || 0;
+      const covLabel = st.coverage === 'official' ? '官方警勤區' : (st.coverage === 'single' ? '單一據點' : (st.coverage === 'mixed' ? '部分推估' : '空間推估'));
+      card.append(button(st.name + (scount ? '（' + scount + ' 里・' + covLabel + '）' : ''), 'text-button', () => openDetail('station', stKey)));
+      card.append(textElement('p', st.dist + ' · ' + st.addr + (st.tel ? '\n電話：' + st.tel : '')));
+      result.append(card);
+    }
+    if (!pr.stations.length) {
+      result.append(textElement('p', '本所直接受理轄區報案與警政服務，無另設下轄派出所。', 'muted'));
+    }
+    if (vlist.length) {
+      const villagesBox = document.createElement('details');
+      villagesBox.className = 'school-rule source-text';
+      villagesBox.append(textElement('summary', '轄內村里（' + vlist.length + ' 里）'));
+      for (const v of vlist) {
+        const vp = villagePrecinct[v.id];
+        villagesBox.append(row(v.d + '・' + v.n, vp?.est ? '推估' : '完整行政區', () => openDetail('village', v.id)));
+      }
+      result.append(villagesBox);
+    }
+    result.append(policeLinks());
+  }
+
+  function renderStation(key) {
+    const st = stationsByKey.get(key);
+    if (!st) return;
+    const vlist = stationVillages.get(key) || [];
+    const cov = st.coverage || 'estimated';
+    const badgeInfo = {
+      official: ['官方警勤區公告', 'badge'],
+      single: ['單一據點行政區', 'badge'],
+      mixed: ['部分官方／部分推估', 'badge est'],
+      estimated: ['空間距離推估', 'badge est']
+    }[cov];
+    result.append(
+      button('‹ ' + st.precinct, 'text-button', () => openDetail('precinct', st.precinct)),
+      textElement('h3', st.name, 'detail-title'),
+      textElement('p', st.dist + ' · ' + st.precinct + (vlist.length ? ' · ' + vlist.length + ' 里' : ''), 'muted'),
+      textElement('span', badgeInfo[0], badgeInfo[1]),
+      textElement('p', '地址：' + st.addr, 'police-meta'),
+      phoneElement(st.tel),
+      button('定位派出所', 'secondary campus-button', () => map.setView(st.coord, 16))
+    );
+    if (cov === 'official') {
+      result.append(textElement('p', '轄內里鄰與警勤區對照採自地方警察局公開公告，實際異動仍以警察局最新公告為準。', 'notice'));
+    } else if (cov === 'single') {
+      result.append(textElement('p', '本所為該行政區唯一派出所／分駐所，村里以完整行政區對應；細節仍以警察局公告為準。', 'notice'));
+    } else {
+      result.append(textElement('p', '此區尚無公開派出所轄區表，地圖範圍係依同分局內派出所距離推估，非正式轄區界線，實際管轄請以地方警察局公告為準。', 'notice'));
+    }
+    const officialVillages = vlist.filter(v => villageStation[v.id]?.src === 'official' && villageStation[v.id]?.b?.[key]?.length);
+    const otherVillages = vlist.filter(v => !(villageStation[v.id]?.src === 'official' && villageStation[v.id]?.b?.[key]?.length));
+    if (officialVillages.length) {
+      result.append(textElement('h3', '警勤區轄內里鄰（' + officialVillages.length + ' 里）', 'section-heading'));
+      for (const v of officialVillages) {
+        const card = document.createElement('article');
+        card.className = 'school-rule';
+        card.append(button(v.d + '・' + v.n, 'text-button', () => openDetail('village', v.id)));
+        for (const rule of villageStation[v.id].b[key]) {
+          card.append(textElement('p', rule));
+        }
+        result.append(card);
+      }
+    }
+    if (otherVillages.length) {
+      const box = document.createElement('details');
+      box.className = 'school-rule source-text';
+      box.open = !officialVillages.length;
+      box.append(textElement('summary', (officialVillages.length ? '其餘' : '') + '涵蓋村里（' + otherVillages.length + ' 里）'));
+      for (const v of otherVillages) {
+        const vs = villageStation[v.id];
+        box.append(row(v.d + '・' + v.n, vs?.est ? '空間推估' : '單一據點', () => openDetail('village', v.id)));
+      }
+      result.append(box);
+    }
+    result.append(policeLinks());
+  }
+
+  function renderPoliceVillage(p) {
+    result.append(textElement('p', p.d, 'muted'), textElement('h3', p.n, 'detail-title'));
+    const vs = villageStation[p.id];
+    const vp = villagePrecinct[p.id];
+    const pr = vp ? precinctsByName.get(vp.p) : null;
+    if (vs) {
+      result.append(textElement('h3', '所屬派出所／分駐所', 'section-heading'));
+      if (vs.src === 'official') {
+        result.append(textElement('span', '官方警勤區公告', 'badge'));
+      } else if (vs.src === 'single') {
+        result.append(textElement('span', '單一據點行政區', 'badge'));
+      } else {
+        result.append(textElement('p', '此區尚無公開派出所轄區表，地圖分區係依同分局內派出所距離推估，非正式轄區界線，實際管轄請以地方警察局公告為準。', 'notice'));
+      }
+      for (const skey of vs.s) {
+        const st = stationsByKey.get(skey) || precinctsByName.get(skey);
+        if (!st) continue;
+        const isDirect = !stationsByKey.has(skey);
+        const card = document.createElement('article');
+        card.className = 'school-card';
+        card.append(button(st.name, 'text-button', () => openDetail(isDirect ? 'precinct' : 'station', skey)));
+        const lines = [];
+        if (vs.src === 'official' && vs.b?.[skey]?.length) {
+          lines.push(...vs.b[skey]);
+        } else {
+          lines.push(vs.est ? '同分局空間距離推估' : (isDirect ? '直屬警察所（單一據點）' : '行政區內唯一據點'));
+        }
+        lines.push('地址：' + st.addr);
+        if (st.tel) lines.push('電話：' + st.tel);
+        card.append(textElement('p', lines.join('\n')));
+        result.append(card);
+      }
+    }
+    if (pr) {
+      result.append(textElement('h3', '所屬警察分局', 'section-heading'));
+      const card = document.createElement('article');
+      card.className = 'school-card';
+      card.append(button(pr.name, 'text-button', () => openDetail('precinct', pr.name)));
+      card.append(textElement('p', (vp.est ? '多分局行政區（空間推估）' : '依完整行政區／公告對應') + '\n地址：' + pr.addr + (pr.tel ? '\n電話：' + pr.tel : '')));
+      result.append(card);
+    }
+    const near = nearestStations([p.c[1], p.c[0]], vp?.p, 3);
+    if (near.length) {
+      result.append(
+        textElement('h3', '鄰近分駐所／派出所', 'section-heading'),
+        textElement('p', '依直線距離排序，僅供據點參考，非正式派出所轄區界線。', 'muted')
+      );
+      for (const st of near) {
+        const card = document.createElement('article');
+        card.className = 'school-card';
+        const label = st.name + '（距離約 ' + st.km.toFixed(2) + ' 公里）';
+        if (st.isPrecinctOffice) {
+          card.append(button(label, 'text-button', () => openDetail('precinct', st.precinct)));
+        } else {
+          card.append(button(label, 'text-button', () => openDetail('station', st.precinct + '|' + st.name)));
+        }
+        card.append(textElement('p', st.precinct + ' · ' + st.addr + (st.tel ? '\n電話：' + st.tel : '')));
+        result.append(card);
+      }
+    }
+    result.append(policeLinks());
+  }
+
+  function formatStationCount(count, cov) {
+    const suffix = cov === 'official' ? '（官方）' : (cov === 'single' ? '' : (cov === 'mixed' ? '（部分推估）' : '（推估）'));
+    return count ? count + ' 里' + suffix : '查看據點';
+  }
+
+  function renderPoliceList() {
+    if (!policeCity) {
+      setTitle('警察分區', textElement('small', '0 筆'));
+      result.append(textElement('p', '尚無此縣市警政資料。', 'empty'));
+      return;
+    }
+    const query = normalize(search.value);
+    const activeDist = district.value;
+    const currentVillages = activeDist ? villagesByDistrict.get(activeDist) : Array.from(villagesById.values());
+    const stationItems = [];
+    for (const pr of policeCity.precincts) {
+      if (!pr.stations.length) {
+        const vlist = stationVillages.get(pr.name) || [];
+        const inDist = !activeDist || pr.districts.includes(activeDist) || vlist.some(v => v.d === activeDist);
+        if (inDist && (!query || normalize(pr.name + pr.addr).includes(query))) {
+          stationItems.push({ label: pr.name, desc: (vlist.length ? vlist.length + ' 里（直屬）' : pr.dist), type: 'precinct', key: pr.name });
+        }
+      }
+      for (const st of pr.stations) {
+        const skey = pr.name + '|' + st.name;
+        const vlist = stationVillages.get(skey) || [];
+        const inDist = !activeDist || st.dist === activeDist || vlist.some(v => v.d === activeDist);
+        if (inDist && (!query || normalize(st.name + pr.name + st.addr).includes(query))) {
+          stationItems.push({ label: st.name, desc: formatStationCount(vlist.length, st.coverage), type: 'station', key: skey, precinct: pr.name });
+        }
+      }
+    }
+    stationItems.sort((a, b) => sortName(a.label, b.label));
+
+    const matchedPrecincts = policeCity.precincts
+      .filter(pr => (!activeDist || pr.districts.includes(activeDist) || pr.dist === activeDist) &&
+        (!query || normalize(pr.name + pr.districts.join('')).includes(query)))
+      .sort((a, b) => sortName(a.name, b.name));
+
+    if (!query && isStationView()) {
+      setTitle(activeDist || '選擇派出所／分駐所', textElement('small', stationItems.length + ' 處'));
+      if (!stationItems.length) {
+        result.append(textElement('p', '此區尚無派出所資料。', 'empty'));
+        return;
+      }
+      for (const item of stationItems) {
+        result.append(row(item.label, item.desc, () => openDetail(item.type, item.key)));
+      }
+      return;
+    }
+
+    if (!query) {
+      setTitle(activeDist || '選擇警察分局', textElement('small', matchedPrecincts.length + ' 處'));
+      if (!matchedPrecincts.length) {
+        result.append(textElement('p', '找不到符合的分局。', 'empty'));
+        return;
+      }
+      for (const pr of matchedPrecincts) {
+        result.append(row(pr.name, pr.stations.length ? pr.stations.length + ' 所' : pr.dist, () => openDetail('precinct', pr.name)));
+      }
+      return;
+    }
+
+    const places = currentVillages.filter(p => normalize(p.d + p.n).includes(query)).sort((a, b) => sortName(a.n, b.n));
+    const totalCount = matchedPrecincts.length + stationItems.length + places.length;
+    setTitle('搜尋結果', textElement('small', totalCount + ' 筆'));
+    if (!totalCount) {
+      result.append(textElement('p', '找不到符合的分局、派出所或里名。', 'empty'));
+      return;
+    }
+    if (stationItems.length) {
+      result.append(textElement('h3', '派出所／分駐所', 'section-heading'));
+      for (const item of stationItems) {
+        result.append(row(item.label, item.precinct ? item.precinct + ' · ' + item.desc : item.desc, () => openDetail(item.type, item.key)));
+      }
+    }
+    if (matchedPrecincts.length) {
+      result.append(textElement('h3', '警察分局', 'section-heading'));
+      for (const pr of matchedPrecincts) {
+        result.append(row(pr.name, pr.stations.length ? pr.stations.length + ' 所' : pr.dist, () => openDetail('precinct', pr.name)));
+      }
+    }
+    if (places.length) {
+      result.append(textElement('h3', '里', 'section-heading'));
+      for (const p of places) result.append(row(p.n, p.d, () => openDetail('village', p.id)));
+    }
+  }
+
+  function renderFireBattalion(name) {
+    const b = fireBattalionsByName.get(name);
+    if (!b) return;
+    const vlist = fireBattalionVillages.get(name) || [];
+    result.append(
+      textElement('p', fireCity.hq.name + ' · ' + b.districts.join('、'), 'muted'),
+      textElement('h3', b.name, 'detail-title')
+    );
+    const est = b.coverage === 'split_estimated';
+    result.append(
+      textElement('span', est ? '多大隊行政區（村里範圍推估）' : '完整行政區對應', est ? 'badge est' : 'badge'),
+      textElement('p', '地址：' + b.addr, 'police-meta'),
+      phoneElement(b.tel),
+      button('定位大隊', 'secondary campus-button', () => map.setView(b.coord, 15))
+    );
+    if (est) {
+      result.append(textElement('p', '轄區含多個大隊共管之行政區，地圖分界依區內分隊位置推估；緊急出勤由 119 統一派遣，實際責任範圍請以消防局公告為準。', 'notice'));
+    }
+    result.append(textElement('h3', '所屬消防分隊（' + b.stations.length + ' 隊）', 'section-heading'));
+    for (const st of b.stations) {
+      const card = document.createElement('article');
+      card.className = 'school-card';
+      const stKey = b.name + '|' + st.name;
+      const scount = fireStationVillages.get(stKey)?.length || 0;
+      const covLabel = st.special ? '特種／支援據點' : (st.coverage === 'single' ? '單一分隊行政區' : (st.coverage === 'mixed' ? '部分推估' : '空間推估'));
+      card.append(button(st.name + (scount ? '（' + scount + ' 里・' + covLabel + '）' : '（' + covLabel + '）'), 'text-button', () => openDetail('fireStation', stKey)));
+      card.append(textElement('p', st.dist + ' · ' + st.addr + (st.tel ? '\n電話：' + st.tel : '')));
+      result.append(card);
+    }
+    if (vlist.length) {
+      const box = document.createElement('details');
+      box.className = 'school-rule source-text';
+      box.append(textElement('summary', '轄內村里（' + vlist.length + ' 里）'));
+      for (const v of vlist) {
+        const vb = villageFireBattalion[v.id];
+        box.append(row(v.d + '・' + v.n, vb?.est ? '推估' : '完整行政區', () => openDetail('village', v.id)));
+      }
+      result.append(box);
+    }
+    result.append(fireLinks());
+  }
+
+  function renderFireStation(key) {
+    const st = fireStationsByKey.get(key);
+    if (!st) return;
+    const vlist = fireStationVillages.get(key) || [];
+    const cov = st.coverage || 'estimated';
+    const badgeInfo = {
+      single: ['單一分隊行政區', 'badge'],
+      mixed: ['部分單一區／部分推估', 'badge est'],
+      special: ['特種／支援分隊', 'badge est'],
+      estimated: ['空間距離推估', 'badge est']
+    }[cov];
+    result.append(
+      button('‹ ' + st.battalion, 'text-button', () => openDetail('fireBattalion', st.battalion)),
+      textElement('h3', st.name, 'detail-title'),
+      textElement('p', st.dist + ' · ' + st.battalion + (vlist.length ? ' · ' + vlist.length + ' 里' : ''), 'muted'),
+      textElement('span', badgeInfo[0], badgeInfo[1]),
+      textElement('p', '地址：' + st.addr, 'police-meta'),
+      phoneElement(st.tel),
+      button('定位分隊', 'secondary campus-button', () => map.setView(st.coord, 16))
+    );
+    if (cov === 'special') {
+      result.append(textElement('p', '本隊屬特種搜救、港務或支援單位，緊急出勤由 119 統一派遣，不單獨劃分一般村里責任區。', 'notice'));
+    } else if (cov === 'single') {
+      result.append(textElement('p', '本隊為該行政區唯一一般消防分隊，村里以完整行政區對應；緊急出勤仍由 119 統一派遣。', 'notice'));
+    } else {
+      result.append(textElement('p', '此區尚無公開分隊細部轄區表，地圖範圍係依區內分隊據點距離推估；緊急救災救護由 119 統一派遣，實際責任範圍請以消防局公告為準。', 'notice'));
+    }
+    if (vlist.length) {
+      const box = document.createElement('details');
+      box.className = 'school-rule source-text';
+      box.open = true;
+      box.append(textElement('summary', '涵蓋村里（' + vlist.length + ' 里）'));
+      for (const v of vlist) {
+        const vs = villageFireStation[v.id];
+        box.append(row(v.d + '・' + v.n, vs?.est ? '空間推估' : '單一分隊', () => openDetail('village', v.id)));
+      }
+      result.append(box);
+    }
+    result.append(fireLinks());
+  }
+
+  function renderFireVillage(p) {
+    result.append(textElement('p', p.d, 'muted'), textElement('h3', p.n, 'detail-title'));
+    const vs = villageFireStation[p.id];
+    const vb = villageFireBattalion[p.id];
+    const b = vb ? fireBattalionsByName.get(vb.b) : null;
+    if (vs) {
+      result.append(textElement('h3', '對應／推估消防分隊', 'section-heading'));
+      if (vs.src === 'single') {
+        result.append(textElement('span', '單一分隊行政區', 'badge'));
+      } else {
+        result.append(textElement('p', '此行政區內有多座分隊或未設駐地分隊，地圖分區係依距離推估；緊急出勤由 119 統一派遣，實際責任區請以消防局公告為準。', 'notice'));
+      }
+      for (const skey of vs.s) {
+        const st = fireStationsByKey.get(skey);
+        if (!st) continue;
+        const card = document.createElement('article');
+        card.className = 'school-card';
+        card.append(button(st.name, 'text-button', () => openDetail('fireStation', skey)));
+        const lines = [
+          vs.est ? '依分隊據點距離推估' : '行政區內唯一一般分隊',
+          '地址：' + st.addr
+        ];
+        if (st.tel) lines.push('電話：' + st.tel);
+        card.append(textElement('p', lines.join('\n')));
+        result.append(card);
+      }
+    }
+    if (b) {
+      result.append(textElement('h3', '所屬救災救護大隊', 'section-heading'));
+      const card = document.createElement('article');
+      card.className = 'school-card';
+      card.append(button(b.name, 'text-button', () => openDetail('fireBattalion', b.name)));
+      card.append(textElement('p', (vb.est ? '多大隊行政區（空間推估）' : '依完整行政區對應') + '\n地址：' + b.addr + (b.tel ? '\n電話：' + b.tel : '')));
+      result.append(card);
+    }
+    const near = nearestFireStations([p.c[1], p.c[0]], 3);
+    if (near.length) {
+      result.append(
+        textElement('h3', '鄰近消防分隊', 'section-heading'),
+        textElement('p', '依直線距離排序，僅供據點距離參考，緊急出勤由 119 統一派遣。', 'muted')
+      );
+      for (const st of near) {
+        const card = document.createElement('article');
+        card.className = 'school-card';
+        card.append(button(st.name + '（距離約 ' + st.km.toFixed(2) + ' 公里）', 'text-button', () => openDetail('fireStation', st.battalion + '|' + st.name)));
+        card.append(textElement('p', st.battalion + ' · ' + st.addr + (st.tel ? '\n電話：' + st.tel : '')));
+        result.append(card);
+      }
+    }
+    result.append(fireLinks());
+  }
+
+  function formatFireStationDesc(st, count) {
+    if (st.special) return '特種／支援據點';
+    if (!count) return '查看據點';
+    return count + ' 里' + (st.coverage === 'single' ? '' : (st.coverage === 'mixed' ? '（部分推估）' : '（推估）'));
+  }
+
+  function renderFireList() {
+    if (!fireCity) {
+      setTitle('消防轄區', textElement('small', '0 筆'));
+      result.append(textElement('p', '尚無此縣市消防資料。', 'empty'));
+      return;
+    }
+    const query = normalize(search.value);
+    const activeDist = district.value;
+    const currentVillages = activeDist ? villagesByDistrict.get(activeDist) : Array.from(villagesById.values());
+    const stationItems = [];
+    for (const b of fireCity.battalions) {
+      for (const st of b.stations) {
+        const skey = b.name + '|' + st.name;
+        const vlist = fireStationVillages.get(skey) || [];
+        const inDist = !activeDist || st.dist === activeDist || vlist.some(v => v.d === activeDist);
+        if (inDist && (!query || normalize(st.name + b.name + st.addr).includes(query))) {
+          stationItems.push({ label: st.name, desc: formatFireStationDesc(st, vlist.length), key: skey, battalion: b.name });
+        }
+      }
+    }
+    stationItems.sort((a, b) => sortName(a.label, b.label));
+
+    const matchedBats = fireCity.battalions
+      .filter(b => (!activeDist || b.districts.includes(activeDist) || b.dist === activeDist) &&
+        (!query || normalize(b.name + b.districts.join('')).includes(query)))
+      .sort((a, b) => sortName(a.name, b.name));
+
+    if (!query && isFireStationView()) {
+      setTitle(activeDist || '選擇消防分隊', textElement('small', stationItems.length + ' 處'));
+      if (!stationItems.length) {
+        result.append(textElement('p', '此區尚無消防分隊資料。', 'empty'));
+        return;
+      }
+      for (const item of stationItems) {
+        result.append(row(item.label, item.desc, () => openDetail('fireStation', item.key)));
+      }
+      return;
+    }
+
+    if (!query) {
+      setTitle(activeDist || '選擇救災救護大隊', textElement('small', matchedBats.length + ' 處'));
+      if (!matchedBats.length) {
+        result.append(textElement('p', '找不到符合的救災大隊。', 'empty'));
+        return;
+      }
+      for (const b of matchedBats) {
+        result.append(row(b.name, b.stations.length + ' 隊', () => openDetail('fireBattalion', b.name)));
+      }
+      return;
+    }
+
+    const places = currentVillages.filter(p => normalize(p.d + p.n).includes(query)).sort((a, b) => sortName(a.n, b.n));
+    const totalCount = matchedBats.length + stationItems.length + places.length;
+    setTitle('搜尋結果', textElement('small', totalCount + ' 筆'));
+    if (!totalCount) {
+      result.append(textElement('p', '找不到符合的消防分隊、大隊或里名。', 'empty'));
+      return;
+    }
+    if (stationItems.length) {
+      result.append(textElement('h3', '消防分隊', 'section-heading'));
+      for (const item of stationItems) {
+        result.append(row(item.label, item.battalion + ' · ' + item.desc, () => openDetail('fireStation', item.key)));
+      }
+    }
+    if (matchedBats.length) {
+      result.append(textElement('h3', '救災救護大隊', 'section-heading'));
+      for (const b of matchedBats) {
+        result.append(row(b.name, b.stations.length + ' 隊', () => openDetail('fireBattalion', b.name)));
+      }
+    }
+    if (places.length) {
+      result.append(textElement('h3', '里', 'section-heading'));
+      for (const p of places) result.append(row(p.n, p.d, () => openDetail('village', p.id)));
+    }
+  }
+
+  function hospitalCardText(h) {
+    const lines = [h.dist + ' · ' + h.owner, '地址：' + h.addr];
+    if (h.tel) lines.push('電話：' + h.tel);
+    if (h.approx) lines.push('※ 座標依地址行政區／村里中心估算');
+    return lines.join('\n');
+  }
+
+  function renderMedRegion(id) {
+    const r = medRegionsById.get(id);
+    if (!r) return;
+    const vlist = medRegionVillages.get(id) || [];
+    const hospitals = (medCity?.hospitals || [])
+      .filter(h => h.region === id)
+      .sort((a, b) => a.tierCode - b.tierCode || sortName(a.name, b.name));
+    result.append(
+      textElement('p', '一級：' + r.l1 + ' · 二級：' + r.l2, 'muted'),
+      textElement('h3', r.sub, 'detail-title'),
+      textElement('span', r.note ? '附表備註二（併入臺北一級）' : '衛福部公告次醫療區域', r.note ? 'badge est' : 'badge'),
+      textElement('p', '本縣市轄區：' + r.districts.join('、') + '（' + vlist.length + ' 里）', 'police-meta')
+    );
+    if (r.fullMembers && r.fullMembers.length > r.districts.length) {
+      result.append(textElement('p', '同次醫療區跨縣市共同成員：' + r.fullMembers.join('、'), 'notice'));
+    } else if (r.fullMembers?.length) {
+      result.append(textElement('p', '納入行政區：' + r.fullMembers.join('、'), 'police-meta'));
+    }
+    if (r.note) result.append(textElement('p', r.note, 'notice'));
+    result.append(textElement('p', '醫療區域供醫院設立許可與醫療資源規劃之用，民眾實際就醫可跨區選擇，不受轄區限制。', 'notice'));
+    result.append(textElement('h3', '轄內健保特約醫院（' + hospitals.length + ' 家）', 'section-heading'));
+    if (!hospitals.length) {
+      result.append(textElement('p', '本區目前無健保特約醫院名錄資料，就醫可前往鄰近次醫療區或中心醫院。', 'muted'));
+    }
+    for (const h of hospitals) {
+      const card = document.createElement('article');
+      card.className = 'school-card';
+      card.append(
+        button(h.name + '（' + h.tier + '）', 'text-button', () => openDetail('medHospital', h.id)),
+        textElement('p', hospitalCardText(h))
+      );
+      result.append(card);
+    }
+    if (vlist.length) {
+      const box = document.createElement('details');
+      box.className = 'school-rule source-text';
+      box.append(textElement('summary', '轄內村里（' + vlist.length + ' 里）'));
+      for (const v of vlist) {
+        box.append(row(v.d + '・' + v.n, r.sub, () => openDetail('village', v.id)));
+      }
+      result.append(box);
+    }
+    result.append(medLinks());
+  }
+
+  function renderMedHospital(id) {
+    const h = medHospitalsById.get(id);
+    if (!h) return;
+    const r = medRegionsById.get(h.region);
+    const vlist = medHospitalVillages.get(id) || [];
+    if (r) result.append(button('‹ ' + r.l1 + ' · ' + r.l2 + ' · ' + r.sub, 'text-button', () => openDetail('medRegion', r.id)));
+    result.append(
+      textElement('h3', h.name, 'detail-title'),
+      textElement('p', h.dist + ' · ' + h.tier + ' · ' + h.owner, 'muted'),
+      textElement('span', h.tier, h.tierCode <= 2 ? 'badge' : 'badge est'),
+      textElement('p', '地址：' + h.addr, 'police-meta'),
+      phoneElement(h.tel),
+      button('定位醫院', 'secondary campus-button', () => map.setView(h.coord, 16))
+    );
+    if (h.approx) {
+      result.append(textElement('p', '此院所門牌尚未取得精確經緯度，地圖點位以所屬村里或行政區幾何中心估算。', 'notice'));
+    }
+    result.append(textElement('p', '民眾就醫可自由跨區前往合適院所；地圖在「鄰近醫院」模式下依院所直線距離推估各村里最近據點。', 'notice'));
+    if (r) {
+      result.append(textElement('h3', '所屬法定醫療區域', 'section-heading'));
+      const card = document.createElement('article');
+      card.className = 'school-card';
+      card.append(
+        button('次醫療區：' + r.sub, 'text-button', () => openDetail('medRegion', r.id)),
+        textElement('p', '一級：' + r.l1 + ' · 二級：' + r.l2 + (r.fullMembers ? '\n同次區成員：' + r.fullMembers.join('、') : ''))
+      );
+      result.append(card);
+    }
+    if (vlist.length) {
+      const box = document.createElement('details');
+      box.className = 'school-rule source-text';
+      box.open = true;
+      box.append(textElement('summary', '距離最近村里（' + vlist.length + ' 里）'));
+      for (const v of vlist) {
+        box.append(row(v.d + '・' + v.n, '空間最近醫院', () => openDetail('village', v.id)));
+      }
+      result.append(box);
+    }
+    result.append(medLinks());
+  }
+
+  function renderMedVillage(p) {
+    result.append(textElement('p', p.d, 'muted'), textElement('h3', p.n, 'detail-title'));
+    const r = medRegionsById.get(villageMedRegion[p.id]);
+    if (r) {
+      result.append(textElement('h3', '所屬法定醫療區域', 'section-heading'));
+      const card = document.createElement('article');
+      card.className = 'school-card';
+      card.append(button('次醫療區：' + r.sub, 'text-button', () => openDetail('medRegion', r.id)));
+      const lines = ['一級：' + r.l1 + ' · 二級：' + r.l2];
+      if (r.fullMembers?.length) lines.push('同次區行政區：' + r.fullMembers.join('、'));
+      if (r.note) lines.push(r.note);
+      card.append(textElement('p', lines.join('\n')));
+      result.append(card, textElement('p', '醫療區域係衛福部規劃醫院資源配置之分區，民眾就醫不受戶籍或轄區限制。', 'notice'));
+    }
+    const near = nearestHospitals([p.c[1], p.c[0]], 5);
+    if (near.length) {
+      result.append(
+        textElement('h3', '鄰近健保特約醫院', 'section-heading'),
+        textElement('p', '依村里中心至院所直線距離排序，僅供空間鄰近參考，急重症請撥打 119。', 'muted')
+      );
+      for (const h of near) {
+        const card = document.createElement('article');
+        card.className = 'school-card';
+        card.append(
+          button(h.name + '（' + h.tier + '・約 ' + h.km.toFixed(2) + ' 公里）', 'text-button', () => openDetail('medHospital', h.id)),
+          textElement('p', hospitalCardText(h))
+        );
+        result.append(card);
+      }
+    }
+    result.append(medLinks());
+  }
+
+  function renderMedList() {
+    if (!medCity) {
+      setTitle('醫療體系', textElement('small', '0 筆'));
+      result.append(textElement('p', '尚無此縣市醫療資料。', 'empty'));
+      return;
+    }
+    const query = normalize(search.value);
+    const activeDist = district.value;
+    const currentVillages = activeDist ? villagesByDistrict.get(activeDist) : Array.from(villagesById.values());
+    const matchedRegions = medCity.regions
+      .filter(r => (!activeDist || r.districts.includes(activeDist)) &&
+        (!query || normalize(r.l1 + r.l2 + r.sub + (r.fullMembers || []).join('')).includes(query)))
+      .sort((a, b) => sortName(a.sub, b.sub));
+    const hospitalItems = medCity.hospitals
+      .filter(h => {
+        const vlist = medHospitalVillages.get(h.id) || [];
+        const inDist = !activeDist || h.dist === activeDist || vlist.some(v => v.d === activeDist);
+        return inDist && (!query || normalize(h.name + h.tier + h.dist + h.addr + h.owner).includes(query));
+      })
+      .sort((a, b) => a.tierCode - b.tierCode || sortName(a.name, b.name));
+
+    if (!query && isMedRegionView()) {
+      setTitle(activeDist || '選擇次醫療區域', textElement('small', matchedRegions.length + ' 區'));
+      if (!matchedRegions.length) {
+        result.append(textElement('p', '此區尚無次醫療區域資料。', 'empty'));
+        return;
+      }
+      for (const r of matchedRegions) {
+        const hCount = medCity.hospitals.filter(h => h.region === r.id).length;
+        const cross = r.fullMembers && r.fullMembers.length > r.districts.length ? ' · 跨縣市共同區' : '';
+        result.append(row(r.sub, '一級：' + r.l1 + ' · 二級：' + r.l2 + ' · ' + hCount + ' 家醫院' + cross, () => openDetail('medRegion', r.id)));
+      }
+      return;
+    }
+
+    if (!query) {
+      setTitle(activeDist || '選擇健保特約醫院', textElement('small', hospitalItems.length + ' 家'));
+      if (!hospitalItems.length) {
+        result.append(textElement('p', '此行政區內無大型健保特約醫院名錄，請切換全縣市或點選地圖鄰近里別查詢最近醫院。', 'empty'));
+        return;
+      }
+      for (const h of hospitalItems) {
+        const nCount = medHospitalVillages.get(h.id)?.length || 0;
+        const desc = h.tier + ' · ' + h.dist + (nCount ? ' · 近鄰 ' + nCount + ' 里' : '');
+        result.append(row(h.name, desc, () => openDetail('medHospital', h.id)));
+      }
+      return;
+    }
+
+    const places = currentVillages.filter(p => normalize(p.d + p.n).includes(query)).sort((a, b) => sortName(a.n, b.n));
+    const totalCount = hospitalItems.length + matchedRegions.length + places.length;
+    setTitle('搜尋結果', textElement('small', totalCount + ' 筆'));
+    if (!totalCount) {
+      result.append(textElement('p', '找不到符合的次醫療區域、醫院或里名。', 'empty'));
+      return;
+    }
+    if (hospitalItems.length) {
+      result.append(textElement('h3', '健保特約醫院', 'section-heading'));
+      for (const h of hospitalItems) {
+        result.append(row(h.name, h.tier + ' · ' + h.dist + ' · ' + h.addr, () => openDetail('medHospital', h.id)));
+      }
+    }
+    if (matchedRegions.length) {
+      result.append(textElement('h3', '次醫療區域', 'section-heading'));
+      for (const r of matchedRegions) {
+        result.append(row(r.sub, '一級：' + r.l1 + ' · 二級：' + r.l2, () => openDetail('medRegion', r.id)));
+      }
+    }
+    if (places.length) {
+      result.append(textElement('h3', '里', 'section-heading'));
+      for (const p of places) result.append(row(p.n, p.d, () => openDetail('village', p.id)));
+    }
+  }
+
   function render() {
     result.replaceChildren();
     if (detail) {
-      setTitle(levels[level] + '學區', button('‹ 返回', 'text-button', () => {
+      setTitle(isPoliceMode() ? '警察分區' : (isFireMode() ? '消防轄區' : (isMedicalMode() ? '醫療體系' : levels[level] + '學區')), button('‹ 返回', 'text-button', () => {
         detail = detail.previous;
         refreshMap();
         render();
       }));
-      if (detail.type === 'village') renderVillage(villagesById.get(detail.key));
-      else renderSchool(detail.key);
+      if (isPoliceMode()) {
+        if (detail.type === 'village') renderPoliceVillage(villagesById.get(detail.key));
+        else if (detail.type === 'precinct') renderPrecinct(detail.key);
+        else if (detail.type === 'station') renderStation(detail.key);
+      } else if (isFireMode()) {
+        if (detail.type === 'village') renderFireVillage(villagesById.get(detail.key));
+        else if (detail.type === 'fireBattalion') renderFireBattalion(detail.key);
+        else if (detail.type === 'fireStation') renderFireStation(detail.key);
+      } else if (isMedicalMode()) {
+        if (detail.type === 'village') renderMedVillage(villagesById.get(detail.key));
+        else if (detail.type === 'medRegion') renderMedRegion(detail.key);
+        else if (detail.type === 'medHospital') renderMedHospital(detail.key);
+      } else {
+        if (detail.type === 'village') renderVillage(villagesById.get(detail.key));
+        else renderSchool(detail.key);
+      }
+      return;
+    }
+    if (isPoliceMode()) {
+      renderPoliceList();
+      return;
+    }
+    if (isFireMode()) {
+      renderFireList();
+      return;
+    }
+    if (isMedicalMode()) {
+      renderMedList();
       return;
     }
     const query = normalize(search.value);
@@ -1472,13 +2721,36 @@ function initCity(cityKey, cityName, data) {
   }, { signal });
   for (const control of document.querySelectorAll('[data-level]')) {
     control.addEventListener('click', () => {
-      level = Number(control.dataset.level);
+      const nextLevel = Number(control.dataset.level);
+      if (nextLevel === level) return;
+      const prevLevel = level;
+      level = nextLevel;
       for (const item of document.querySelectorAll('[data-level]')) item.setAttribute('aria-pressed', String(item === control));
-      detail = detail?.type === 'village' ? { ...detail, area: null, previous: null } : null;
+      if (prevLevel !== level) {
+        detail = detail?.type === 'village' ? { type: 'village', key: detail.key, area: null, previous: null } : null;
+      }
+      syncModeUI();
       refreshMap();
       render();
     }, { signal });
   }
+  function bindSubViewToggle(selector, prop, getVal, setVal) {
+    const controls = document.querySelectorAll(selector);
+    for (const control of controls) {
+      control.addEventListener('click', () => {
+        const nextView = control.dataset[prop];
+        if (nextView === getVal()) return;
+        setVal(nextView);
+        for (const item of controls) item.setAttribute('aria-pressed', String(item === control));
+        syncModeUI();
+        refreshMap();
+        render();
+      }, { signal });
+    }
+  }
+  bindSubViewToggle('[data-police-view]', 'policeView', () => policeView, v => { policeView = v; });
+  bindSubViewToggle('[data-fire-view]', 'fireView', () => fireView, v => { fireView = v; });
+  bindSubViewToggle('[data-med-view]', 'medView', () => medView, v => { medView = v; });
   townToggle.addEventListener('click', () => {
     showTowns = !showTowns;
     townToggle.setAttribute('aria-pressed', String(showTowns));
